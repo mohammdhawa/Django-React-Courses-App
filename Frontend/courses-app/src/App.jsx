@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 // Bootstrap CSS
@@ -12,34 +12,37 @@ function App() {
 
     const [courses, setCourses] = useState([
         {
+            id:33,
             name: "Learn Basic Python",
             description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
             price: 19.99,
             category: "Programming",
             image: MyImage,
         },
-        {
-            name: "Learn Basic Python",
-            description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-            price: 19.99,
-            category: "Programming",
-            image: MyImage,
-        },
-        {
-            name: "Learn Basic Python",
-            description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-            price: 19.99,
-            category: "Programming",
-            image: MyImage,
-        },
-        {
-            name: "Learn Basic Python",
-            description: "Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.",
-            price: 19.99,
-            category: "Programming",
-            image: MyImage,
-        }
     ])
+
+    useEffect(() => {
+    fetch('http://localhost:8000/api/courses/')
+        .then(response => response.json())
+        .then(data => setCourses(data))
+        .catch(error => console.error('Error fetching courses:', error)); // Add error handling
+}, []);
+
+
+    const [selectedCourse, setSelectedCourse] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+
+
+    const handleCourseClick = (course) => {
+        setSelectedCourse(course);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setSelectedCourse(null);
+    }
+
 
   return (
       <>
@@ -74,8 +77,8 @@ function App() {
                   <h1>OUR COURSES</h1>
               </div>
               <div className="row p-2">
-                  {courses.map((course, index) => (
-                      <div key={index} className="col-lg-4 py-2 text-center">
+                  {courses.map((course) => (
+                      <div key={course.id} className="col-lg-4 py-2 text-center">
                           <div className="mycard p-3 shadow-lg">
                               <div className="d-flex justify-content-center">
                                   <img
@@ -84,9 +87,12 @@ function App() {
                                       alt={course.name}
                                   />
                               </div>
-                              <a className="mylink" href="#">
+                              <div onClick={() => handleCourseClick(course)} className="mylink">
                                   <h3 className="pt-4">{course.name}</h3>
-                              </a>
+                              </div>
+                              {/*<button onClick={() => handleCourseClick(course)} className="mylink">*/}
+                              {/*    <h3 className="pt-4">{course.name}</h3>*/}
+                              {/*</button>*/}
                               <p className="text-secondary">{course.category}</p>
                               <div className="row pe-3">
                                   <div className="col-lg-6">
@@ -101,6 +107,31 @@ function App() {
                   ))}
               </div>
           </div>
+
+
+          {showModal && selectedCourse && (
+    <div className="custom-modal" onClick={handleCloseModal}>
+        <div className="custom-modal-dialog" onClick={(e) => e.stopPropagation()}>
+            <div className="custom-modal-header">
+                <h4 className="modal-title">{selectedCourse.name}</h4>
+                <button type="button" className="btn-close" onClick={handleCloseModal}>&times;</button>
+            </div>
+            <div className="custom-modal-body">
+                <img src={selectedCourse.image} alt={selectedCourse.name} />
+                <p>{selectedCourse.description}</p>
+                <p><strong>Price:</strong> ${selectedCourse.price}</p>
+            </div>
+            <div className="custom-modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={handleCloseModal}>Close</button>
+                <button type="button" className="btn btn-primary">Enroll Now</button>
+            </div>
+        </div>
+    </div>
+)}
+
+
+
+
 
 
       </>
