@@ -6,11 +6,9 @@ import "bootstrap/dist/css/bootstrap.min.css";
 // Bootstrap Bundle JS
 import "bootstrap/dist/js/bootstrap.bundle.min";
 import './App.css'
-import MyImage from "./components/images/2222.png"
 import Navbar from "./components/navbar.jsx";
 import Courses from "./components/courses.jsx";
 import Course_detail from "./components/course_detail.jsx";
-import Categories from "./components/categories.jsx";
 import FilterCourses from "./components/filter_courses.jsx";
 
 function App() {
@@ -56,7 +54,7 @@ function App() {
         return isCategoryMatch && isMinPriceMatch && isMaxPriceMatch;
     });
 
-    setFilteredCourses(filteredCourses); // Update filteredCourses with filtered results
+    setFilteredCourses(filteredCourses);
 };
 
 
